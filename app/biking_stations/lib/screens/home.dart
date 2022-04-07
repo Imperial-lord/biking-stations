@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:biking_stations/main.dart';
+import 'package:biking_stations/screens/navigate.dart';
 import 'package:flutter/material.dart';
 
 import '../constants/bike_stations.dart';
@@ -16,6 +17,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   late String name, address;
+  List<String> stationDistances = sharedPreferences.getStringList('distances')!;
   List<bool> selectedStation = List.generate(4, (index) => false);
 
   @override
@@ -26,7 +28,13 @@ class _HomeState extends State<Home> {
     super.initState();
   }
 
-  void handleStartTrip() {}
+  void handleStartTrip() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (_) =>
+                Navigate(stationIndex: selectedStation.indexOf(true))));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +49,7 @@ class _HomeState extends State<Home> {
         },
         child: StationsCard(
             name: bikeStations[index]['name'],
-            distance: '5',
+            distance: stationDistances[index],
             imageUrl: bikeStations[index]['image'],
             isSelected: selectedStation[index]),
       ),

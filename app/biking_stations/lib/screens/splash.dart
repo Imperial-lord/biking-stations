@@ -44,10 +44,19 @@ class _SplashState extends State<Splash> {
         LatLng(_locationData.latitude!, _locationData.longitude!);
     Map currentLocation = await getParsedReverseGeocoding(currentLatLng);
 
+    List<String> stationDistance = List.generate(4, (index) => '0');
+    for (int i = 0; i < 4; i++) {
+      stationDistance[i] =
+          ((await getDirectionsAPIResponse(currentLatLng, i))['distance'] /
+                  1000)
+              .toStringAsFixed(2);
+    }
+
     // Store the user location in sharedPreferences
     sharedPreferences.setString('location', json.encode(currentLocation));
     sharedPreferences.setDouble('latitude', _locationData.latitude!);
     sharedPreferences.setDouble('longitude', _locationData.longitude!);
+    sharedPreferences.setStringList('distances', stationDistance);
 
     Navigator.pushAndRemoveUntil(context,
         MaterialPageRoute(builder: (_) => const Home()), (route) => false);
